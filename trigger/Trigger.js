@@ -1,25 +1,25 @@
 const async = require('async');
 
 /**
- * Interface for triggers. Implements most functions, but getData is normally different
+ * Interface for triggers. Implements most functionality, but extending this
+ * class is still needed for everything
  * @abstract
  **/
 class Trigger {
-	// opts.delay is time in seconds that function will be repeated
-	
 	/** Constructor for Trigger
 	 * @param {string} query - Query string to be used for getting data
 	 * @param {Match} match - Match object for checking if query string matches trigger
-	 * @param {Object} opts - Contains optional data for objects
-	 * @param {Integer} opts.delay - Delay (in seconds) for interval delay
+	 * @param {object} opts - Contains optional data for objects
+	 * @param {number} opts.delay - Delay (in seconds) for interval delay
 	 * @param {Alert[]} opts.alerts - Default alerts to add with trigger
 	 * @public
 	 * @constructor
+	 * @todo Find better way to check for opts besides if statement
 	 **/
 	constructor(query, match, opts) {
 		this.query = query;
 		this.match= match;
-		// TODO: Better way to do this?
+
 		if (!opts) {
 			var opts = {};
 		}
@@ -41,30 +41,32 @@ class Trigger {
 
 	/**
 	 * Starts interval for running triggers
-	 * @private
+	 * @public
 	 **/
 	start() {
 		let id = setInterval(this.trigger, this.delay, (err) => {
 			if (err) {
 				console.log("Error: ", err);
-				return clearInterval(id);
+				// Clear the interval if the error is serious
+				// clearInterval(id);
 			}
+
 		});
 	}
 
 	/**
 	 * Adds new alerts to internal alert array
 	 * @param {Alert} newAlert - New alert object to be called by trigger
-	 * @private
+	 * @public
 	 **/
 	addAlert(newAlert) {
 		this.alerts.push(newAlert);
 	}
 
-
 	/**
 	 * Converts trigger into JSON so that it can be exported
-	 * @private
+	 * @returns {object} JSON representation of trigger
+	 * @public
 	 **/
 	save() {
 		let alerts = [];
@@ -94,6 +96,7 @@ class Trigger {
 	/**
 	 * @callback Trigger~triggerCallback
 	 * @param {Error} err - Error if something happens in trigger
+	 * @private
 	 **/
 
 	/**
@@ -107,13 +110,15 @@ class Trigger {
 	 * @callback Trigger~getDataCallback
 	 * @param {Error} err - Error if something happens in getData which is returned to waterfall
 	 * @param {Array} hits - Return hits given by data
+	 * @private
 	 **/
 
 	/**
 	 * Uses Match objects to check for successful matches
 	 * @param {Array} hits - Array of hits for data returned by "getData"
 	 * @param {Trigger~matcherCallback}
-	 * @access private
+	 * @private
+	 * @todo Pass successful matches the hits that made them successful
 	 **/
         matcher(hits, callback) {
                 this.match.isMatch(hits, (err, isMatch) => {
@@ -126,13 +131,14 @@ class Trigger {
 	 * @callback Trigger~matcherCallback
 	 * @param {Error} err - Error
 	 * @param {boolean} isMatch - Checks if matcher is correct or not
+	 * @private
 	 **/
 
 	/**
 	 * Calls all alerts given by internal alert array
 	 * @param {boolean} isMatch - Used to check if matcher was successful
 	 * @param {Trigger~callAlertsCallback} callback - callback
-	 * @access private
+	 * @private
 	 **/
         callAlerts(isMatch, callback) {
                 // Return callback if it's not a match
@@ -144,7 +150,6 @@ class Trigger {
                 }
 
                 // Execute callbacks if it is a match
-                // TODO: Parallelize alert calling
                 async.parallel(alertFuncs, (err) => {
                         if (err) return callback(err);
                         else return callback(null);
@@ -153,6 +158,7 @@ class Trigger {
 	/**
 	 * @callback Trigger~callAlertsCallback
 	 * @param {Error} err - Error
+	 * @private
 	 **/
 }
 
