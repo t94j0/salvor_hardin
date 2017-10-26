@@ -22,4 +22,4 @@ class Match {
 	}
 }
 
-module.exports.Match = Match;
+module.exports = Match;

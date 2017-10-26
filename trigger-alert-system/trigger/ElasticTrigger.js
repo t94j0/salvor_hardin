@@ -1,13 +1,13 @@
-const { Trigger } = require('./Trigger');
+const Trigger = require(__dirname+'/Trigger');
 const async = require('async');
 
 
 /**
- * ELK specific trigger
+ * Elasticsearch specific trigger
  * @example
  * let newMatch = new Match('COUNT', 5, { sign: '>' });
  * let newAlert = new SayAlert('New Alert!');
- * let newTrigger = new ELKTrigger(client, 'max~', newMatch, {
+ * let newTrigger = new ElasticTrigger(client, 'max~', newMatch, {
  *  	delay: 5,
  *  	alerts: [newAlert]
  * });
@@ -15,11 +15,11 @@ const async = require('async');
  *
  * @extends {Trigger}
  **/
-class ELKTrigger extends Trigger {
+class ElasticTrigger extends Trigger {
 	/**
 	 * @constructor
-	 * @param {ElkClient} client - Authenticated ELK client
-	 * @param {string} client - ELK search query that will be used to match
+	 * @param {ElasticClient} client - Authenticated Elasticsearch client
+	 * @param {string} client - Elastic search query that will be used to match
 	 * @param {Match} match - Match object that will do the matching
 	 * @param {object} opts - Optional parameters that have defaults
 	 * @param {number} opts.delay - Delay for interval to go off
@@ -42,7 +42,15 @@ class ELKTrigger extends Trigger {
 			q: this.query
 		})
 		.then((body) => {
-			let hits = body.hits.hits;
+			let hits = body.hits;
+			// hits comes with { total: number, hits: {} }
+			// Rename "total" to "size"
+			hits.size = hits.total;
+			delete hits.total;
+			// Rename "hits" to "data"
+			hits.data = hits.hits;
+			delete hits.hits;
+
 			return callback(null, hits);
 		}, (err) => {
 			return callback(err, null);
@@ -50,4 +58,4 @@ class ELKTrigger extends Trigger {
         }
 }
 
-module.exports.ELKTrigger = ELKTrigger;
+module.exports = ElasticTrigger;

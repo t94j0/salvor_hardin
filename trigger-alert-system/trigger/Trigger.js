@@ -14,15 +14,12 @@ class Trigger {
 	 * @param {Alert[]} opts.alerts - Default alerts to add with trigger
 	 * @public
 	 * @constructor
-	 * @todo Find better way to check for opts besides if statement
 	 **/
 	constructor(query, match, opts) {
 		this.query = query;
 		this.match= match;
 
-		if (!opts) {
-			var opts = {};
-		}
+		this.opts = this.opts || {};
 
 		// Set defaults for optional parameters
 		this.delay = opts.delay || 30;
@@ -30,28 +27,42 @@ class Trigger {
 		this.delay *= 1000;
 		this.alerts = opts.alerts || [];
 
+		// private data members
+		this.intervalID = -1;
+
 		// Value of "this" changes when inside async.waterfall binding
                 // "this" from the constructor keeps value of this
                 this.trigger = this.trigger.bind(this);
                 this.getData = this.getData.bind(this);
                 this.matcher = this.matcher.bind(this);
                 this.callAlerts = this.callAlerts.bind(this);
+                this.stop = this.stop.bind(this);
 	}
-
 
 	/**
 	 * Starts interval for running triggers
+	 * @param {Trigger~errorCallback} callback - Callback for returning trigger errors
 	 * @public
 	 **/
-	start() {
+	start(callback) {
 		let id = setInterval(this.trigger, this.delay, (err) => {
-			if (err) {
-				console.log("Error: ", err);
-				// Clear the interval if the error is serious
-				// clearInterval(id);
-			}
-
+			if (err) callback(err);
 		});
+
+		this.intervalID = id;
+	}
+
+	/**
+	 * Stops interval only if start has been called
+	 * @param {Trigger~errorCallback} callback - Callback for returning errors
+	 * @public
+	 **/
+	stop(callback) {
+		if (this.intervalID === -1) {
+			return callback(new Error("Start has not been called yet."))
+		} else {
+			clearInterval(this.intervalID);
+		}
 	}
 
 	/**
@@ -67,6 +78,7 @@ class Trigger {
 	 * Converts trigger into JSON so that it can be exported
 	 * @returns {object} JSON representation of trigger
 	 * @public
+	 * @todo Finish writing
 	 **/
 	save() {
 		let alerts = [];
@@ -80,7 +92,7 @@ class Trigger {
 	
 	/**
 	 * Individual trigger that is called every interval
-	 * @param {Trigger~triggerCallback} callback - Callback that is used by interval
+	 * @param {Trigger~errorCallback} callback - Callback that is used by interval
 	 * @access private
 	 **/
 	trigger(callback) {
@@ -93,11 +105,6 @@ class Trigger {
                         else return callback(null);
                 });
 	}
-	/**
-	 * @callback Trigger~triggerCallback
-	 * @param {Error} err - Error if something happens in trigger
-	 * @private
-	 **/
 
 	/**
 	 * Get data for specific implemention
@@ -115,15 +122,16 @@ class Trigger {
 
 	/**
 	 * Uses Match objects to check for successful matches
-	 * @param {Array} hits - Array of hits for data returned by "getData"
+	 * @param {object} hits - Hit object for count
+	 * @param {number} hits.size - Size of hits
+	 * @param {Array} hits.data - Data used for hits. This will vary for every implementation
 	 * @param {Trigger~matcherCallback}
 	 * @private
-	 * @todo Pass successful matches the hits that made them successful
 	 **/
         matcher(hits, callback) {
                 this.match.isMatch(hits, (err, isMatch) => {
                         if (err) return callback(err, false);
-                        else if (isMatch) return callback(null, true);
+                        else if (isMatch) return callback(null, true, hits);
                         else return callback(null, false);
                 });
         }
@@ -131,23 +139,27 @@ class Trigger {
 	 * @callback Trigger~matcherCallback
 	 * @param {Error} err - Error
 	 * @param {boolean} isMatch - Checks if matcher is correct or not
+	 * @param {object} hits - Data returned by getData
 	 * @private
 	 **/
 
 	/**
 	 * Calls all alerts given by internal alert array
 	 * @param {boolean} isMatch - Used to check if matcher was successful
+	 * @param {object} hits - Data returned by getData
 	 * @param {Trigger~callAlertsCallback} callback - callback
 	 * @private
 	 **/
-        callAlerts(isMatch, callback) {
+        callAlerts(isMatch, hits, callback) {
                 // Return callback if it's not a match
                 if (!isMatch) return callback(null);
 
+		// Push functions to array and bind "hits"
                 let alertFuncs = [];
                 for (let i in this.alerts) {
-                        alertFuncs.push(this.alerts[i].alert);
+                        alertFuncs.push(this.alerts[i].alert.bind(null, hits));
                 }
+
 
                 // Execute callbacks if it is a match
                 async.parallel(alertFuncs, (err) => {
@@ -162,4 +174,4 @@ class Trigger {
 	 **/
 }
 
-module.exports.Trigger = Trigger;
+module.exports = Trigger;

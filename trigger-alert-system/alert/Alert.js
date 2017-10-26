@@ -3,9 +3,9 @@ class Alert {
 		this.alert = this.alert.bind(this);
 	}
 
-	alert(callback) {
+	alert(hits, callback) {
 		return callback(null);
 	}
 }
 
-module.exports.Alert = Alert;
+module.exports = Alert;

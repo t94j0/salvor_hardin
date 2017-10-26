@@ -1,11 +1,11 @@
 // operations are in charge of checking for if an object has the correct options
 const operations = {
-	'COUNT': (array, value, opts) => {
+	'COUNT': (data, value, opts) => {
 		if (!opts.sign) {
 			return null;
 		}
 
-		const arrayLength = array.length;
+		const arrayLength = data.size;
 		const sign = opts.sign;
 		
 		switch(sign) {
