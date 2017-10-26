@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@slack/client": "^3.14.1",
     "async": "^2.5.0",
     "elasticsearch": "^13.3.1"
   }

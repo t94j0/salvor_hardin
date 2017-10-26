@@ -7,7 +7,7 @@ const client = new elasticsearch.Client({
 });
 
 let match = new Match('COUNT', 5, { sign: '>' });
-let maxalert = new SayAlert("Found > 5 fuzzy searches with 'max'");
+let maxalert = new SlackAlert("Found > 5 fuzzy searches with 'max'");
 
 let maxTrigger = new ElasticTrigger(client, 'max~', match, { delay: 5 });
 maxTrigger.addAlert(maxalert);
