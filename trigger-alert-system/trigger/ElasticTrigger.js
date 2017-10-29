@@ -1,6 +1,6 @@
 const Trigger = require(__dirname+'/Trigger');
+const elasticsearch = require('elasticsearch');
 const async = require('async');
-
 
 /**
  * Elasticsearch specific trigger
@@ -18,8 +18,7 @@ const async = require('async');
 class ElasticTrigger extends Trigger {
 	/**
 	 * @constructor
-	 * @param {ElasticClient} client - Authenticated Elasticsearch client
-	 * @param {string} client - Elastic search query that will be used to match
+	 * @param {ElasticClient} client - Client for elasticsearch
 	 * @param {Match} match - Match object that will do the matching
 	 * @param {object} opts - Optional parameters that have defaults
 	 * @param {number} opts.delay - Delay for interval to go off
@@ -28,8 +27,12 @@ class ElasticTrigger extends Trigger {
 	 **/
         constructor(client, query, match, opts) {
                 super(query, match, opts);
-                this.client = client;
+		this.client = client;
         }
+	/**
+	 * See [here]{@link https://www.npmjs.com/package/elasticsearch}
+	 * @typedef {object} ElasticClient
+	 */
 	
 	/**
 	 * Queries using Elasticsearch and returns hits

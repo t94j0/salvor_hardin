@@ -1,0 +1,33 @@
+<h1>Welcome</h1>
+
+<h2>Data Source Type</h2>
+<select  id="type">
+	<option value="elasticsearch">Elasticsearch</option>
+	<option value="splunk" readonly>Splunk</option>
+</select>
+
+<h2>IP with port</h2>
+<input type="text" id="ip" />
+
+
+<br>
+
+<button type="button" id="submit">Submit</button>
+
+<script>
+let { ipcRenderer } = require('electron');
+
+document.getElementById('submit').addEventListener('click', () => {
+	let typeEle = document.getElementById('type');
+	let type = typeEle.options[typeEle.selectedIndex].value;
+	let ip = document.getElementById('ip').value;
+
+	let output = { type: type, ip: ip };
+
+	ipcRenderer.send('submitWelcomeTypeIP', output);
+});
+
+ipcRenderer.on('replyWelcomeTypeIP', (event, arg) => {
+	console.log('Failed to ping!!!');
+});
+</script>

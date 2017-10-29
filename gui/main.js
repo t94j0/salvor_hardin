@@ -1,23 +1,15 @@
-const { app, BrowserWindow } = require('electron');
-const path = require('path');
-const url = require('url');
+const { app } = require('electron');
+const windowSingleton = require('./WindowSingleton');
+const Welcome = require('./pages/Welcome');
 
-let globalWindow
+let mainWindow
 
 function createWindow() {
-	globalWindow = new BrowserWindow({ width: 800, height: 600 });
-	globalWindow.loadURL(url.format({
-		pathname: path.join(__dirname, 'index.html'),
-		protocol: 'file:',
-		slashes: true
-	}));
-
-	globalWindow.on('close', () => {
-		globalWindow = null;
-	});
+	mainWindow = windowSingleton();
+	new Welcome();
 }
 
-
+// Application related things
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
@@ -30,7 +22,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
 	// On macOS it's common to re-create a window in the app when the
 	// dock icon is clicked and there are no other windows open.
-	if (win === null) {
+	if (mainWindow === null) {
 		createWindow()
 	}
 })

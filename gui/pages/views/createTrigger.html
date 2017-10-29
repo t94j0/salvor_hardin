@@ -1,0 +1,49 @@
+<h1>Create Trigger</h1>
+
+<h2>Create Match</h2>
+<b>Count</b>
+<select id="matchType">
+	<option value="COUNT">Count</option>
+</select>
+
+<b>Match Number</b>
+<input type="number" id="matchNumber" />
+
+<b>Match Sign</b>
+<select id="matchSign">
+	<option value=">">></option>
+	<option value="<"><</option>
+	<option value="=">=</option>
+	<option value="!=">!=</option>
+	<option value="<="><=</option>
+	<option value=">=">>=</option>
+</select>
+
+<h2>Query</h2>
+<input type="text" id="matchQuery" />
+
+<h2>Delay</h2>
+<p> Time (in seconds) until checking for errors again </p>
+<input type="number" id="matchDelay" />
+
+<br>
+
+<button type="button" id="submit">Submit</button>
+
+<script>
+let { ipcRenderer } = require('electron');
+
+document.getElementById('submit').addEventListener('click', () => {
+	let output = {};
+
+	let typeEle = document.getElementById('matchType');
+	output['type'] = typeEle.options[typeEle.selectedIndex].value;
+	output['number'] = document.getElementById('matchNumber').value;
+	let signEle = document.getElementById('matchSign');
+	output['sign'] = signEle.options[signEle.selectedIndex].value;
+	output['query'] = document.getElementById('matchQuery').value;
+	output['delay'] = document.getElementById('matchDelay').value;
+
+	ipcRenderer.send('submitTrigger', output);
+});
+</script>

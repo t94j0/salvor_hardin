@@ -37,6 +37,7 @@ class Trigger {
                 this.matcher = this.matcher.bind(this);
                 this.callAlerts = this.callAlerts.bind(this);
                 this.stop = this.stop.bind(this);
+                this.start = this.start.bind(this);
 	}
 
 	/**
@@ -130,36 +131,36 @@ class Trigger {
 	 **/
         matcher(hits, callback) {
                 this.match.isMatch(hits, (err, isMatch) => {
-                        if (err) return callback(err, false);
-                        else if (isMatch) return callback(null, true, hits);
-                        else return callback(null, false);
+                        if (err) return callback(err, { isMatch:false });
+                        else if (isMatch) return callback(null, { isMatch: true, hits: hits });
+                        else return callback(null, { isMatch: false });
                 });
         }
 	/**
 	 * @callback Trigger~matcherCallback
 	 * @param {Error} err - Error
-	 * @param {boolean} isMatch - Checks if matcher is correct or not
-	 * @param {object} hits - Data returned by getData
+	 * @param {boolean} hits.isMatch - Checks if matcher is correct or not
+	 * @param {object} hits.hits - Data returned by getData
 	 * @private
 	 **/
 
 	/**
 	 * Calls all alerts given by internal alert array
-	 * @param {boolean} isMatch - Used to check if matcher was successful
-	 * @param {object} hits - Data returned by getData
+	 * @param {object} hits - Object used to wrap it
+	 * @param {boolean} hits.isMatch - Used to check if matcher was successful
+	 * @param {object} hits.hits - Data returned by getData
 	 * @param {Trigger~callAlertsCallback} callback - callback
 	 * @private
 	 **/
-        callAlerts(isMatch, hits, callback) {
+        callAlerts(hits, callback) {
                 // Return callback if it's not a match
-                if (!isMatch) return callback(null);
+                if (!hits.isMatch) return callback(null);
 
 		// Push functions to array and bind "hits"
                 let alertFuncs = [];
                 for (let i in this.alerts) {
-                        alertFuncs.push(this.alerts[i].alert.bind(null, hits));
+                        alertFuncs.push(this.alerts[i].alert.bind(null, hits.hits));
                 }
-
 
                 // Execute callbacks if it is a match
                 async.parallel(alertFuncs, (err) => {
