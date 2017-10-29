@@ -29,7 +29,6 @@ class Welcome extends Page {
 			}
 		})
 	}
-
 }
 
 module.exports = Welcome;

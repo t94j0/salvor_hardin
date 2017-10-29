@@ -8,15 +8,19 @@ function createWindow() {
                 height: 600
         });
 
-        mainWindow.on('close', () => {
-                mainWindow = null;
-        });
+	mainWindow.on('close', () => {
+		mainWindow = null;
+	});
 }
 
 module.exports = () => {
-	if (!mainWindow) {
+	if (!mainWindow){
 		createWindow();
 	}
 
+	return mainWindow;
+}
+
+module.exports.getWindow = () => {
 	return mainWindow;
 }
