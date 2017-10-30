@@ -4,7 +4,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-	  "prestart": "cd ./views; npm run build; cd ..",
+	  "prestart": "cd ./views && npm run build; cd ..",
 	  "start": "electron ."
   },
   "author": "",

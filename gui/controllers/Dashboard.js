@@ -1,4 +1,3 @@
-const Page = require('./Page');
 const triggerManager = require('../TriggerManager');
 const { Match, ElasticTrigger, ConsoleAlert } = require('../../trigger-alert-system');
 const { ipcMain } = require('electron');

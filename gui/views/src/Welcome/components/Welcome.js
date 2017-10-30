@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
-const { sendConnect } = require('../ipcAPI');
+import store from '../../store';
+import { addClient } from '../action-creators/clients';
+import elasticsearch from 'elasticsearch';
 
 class Welcome extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			type: '',
-			ip: ''
+			type: 'elasticsearch',
+			ip: 'localhost:9200',
 		}
 
 		this.handleIPChange = this.handleIPChange.bind(this);
 		this.handleAggregatorChange = this.handleAggregatorChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
-	
+
 	handleIPChange(event) {
 		this.setState({ ip: event.target.value });
 	}
@@ -23,12 +25,15 @@ class Welcome extends Component {
 	}
 
 	handleSubmit(event) {
-		sendConnect(this.state);
+		store.dispatch();
+
 		event.preventDefault();
 	}
 
 	render() {
 		return (
+			<div>
+			<p>{this.state.error}</p>
 			<form onSubmit={this.handleSubmit}>
 				<label>Data Aggregator:</label>
 				<br/>
@@ -43,6 +48,7 @@ class Welcome extends Component {
 				<br/>
 				<button type="submit">Submit</button>
 			</form>
+			</div>
 		);
 	}
 }

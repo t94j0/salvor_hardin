@@ -1,13 +1,10 @@
-const { app, BrowserWindow } = require('electron');
-const windowSingleton = require('./WindowSingleton');
-const Welcome = require('./controllers/Welcome');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const url = require('url');
 const path = require('path');
 
 let mainWindow
 
 function createWindow() {
-	//new Welcome();
 	mainWindow = new BrowserWindow({
 		width: 800,
 		height: 600
