@@ -1,7 +1,11 @@
 // operations are in charge of checking for if an object has the correct options
 const operations = {
-	'COUNT': (data, value, opts) => {
+	'COUNT': (data, opts) => {
 		if (!opts.sign) {
+			return null;
+		}
+
+		if (!opts.value) {
 			return null;
 		}
 
@@ -10,18 +14,20 @@ const operations = {
 		
 		switch(sign) {
 			case '=':
-				return arrayLength == value;
+				return arrayLength == opts.value;
 			case '!=':
-				return arrayLength != value;
+				return arrayLength != opts.value;
 			case '>':
-				return arrayLength > value;
+				return arrayLength > opts.value;
 			case '<':
-				return arrayLength < value;
+				return arrayLength < opts.value;
 			case '>=':
-				return arrayLength >= value;
+				return arrayLength >= opts.value;
 			case '<=':
-				return arrayLength <= value;
+				return arrayLength <= opts.value;
 		}
+	}, 'EXISTS': (data, opts) => {
+		return data.size > 0;
 	}
 };
 

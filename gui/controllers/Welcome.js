@@ -1,15 +1,14 @@
-const Page = require('./Page');
-const Indices = require('./Indices');
-const elasticsearch = require('elasticsearch');
 const { ipcMain } = require('electron');
+const Page = require('./Page');
+
+const Dashboard = require('./Dashboard');
+const elasticsearch = require('elasticsearch');
 
 class Welcome extends Page {
 	constructor() {
 		super('welcome.html');
 
 		ipcMain.on('submitWelcomeTypeIP', this.submitTypeIP);
-
-		this.submitTypeIP = this.submitTypeIP.bind(this);
 	}
 
 	submitTypeIP(event, arg) {
@@ -24,8 +23,7 @@ class Welcome extends Page {
 			if (err) {
 				event.sender.send('replyWelcomeTypeIP', 'failed ping');
 			} else {
-
-				let indices = new Indices();
+				new Dashboard(client);
 			}
 		})
 	}

@@ -9,7 +9,7 @@ class Page {
 		
 		// Get URL for requested view
 		let htmlURL = url.format({
-			pathname: path.join(__dirname, 'views', htmlFile),
+			pathname: path.join(__dirname, '..', 'views', htmlFile),
 			protocol: 'file:',
 			slashes: true
 		});

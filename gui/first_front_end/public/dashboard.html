@@ -1,0 +1,84 @@
+<h1>Dashboard</h1>
+<h2>Create Trigger</h2>
+<b>Query</b>
+<input type="text" id="query" />
+<br>
+<b>Match Type</b>
+<select id="matchType">
+	<option value="EXISTS">Exists</option>
+        <option value="COUNT">Count</option>
+</select>
+<br>
+<b>Match Value (for Count)</b>
+<input type="number" id="matchNumber" />
+<br>
+<b>Match Sign (for Count)</b>
+<select id="matchSign">
+        <option value=">">></option>
+        <option value="<"><</option>
+        <option value="=">=</option>
+        <option value="!=">!=</option>
+        <option value="<="><=</option>
+        <option value=">=">>=</option>
+</select>
+<br>
+<b>Delay (optional)<b>
+<p> Time (in seconds) until checking for errors again </p>
+<input type="number" id="matchDelay" />
+
+<br>
+
+<button type="button" id="submitTrigger">Submit</button>
+
+<h2>Create Alert</h2>
+
+<b>Assign to Trigger ID</b>
+<input type="text" id="triggerID">
+<br>
+<b>Alert</b>
+<select id="alertType">
+	<option value="console">Console</option>
+	<option value="slack">Slack</option>
+</select>
+<br>
+<b>Input (for console)</b>
+<input type="text" id="alertInput" />
+<br>
+<button type="button" id="alertSubmit">Submit</button>
+
+<script>
+let { ipcRenderer } = require('electron');
+document.getElementById('submitTrigger').addEventListener('click', () => {
+	let output = {};
+
+	output['query'] = document.getElementById('query').value;
+	let matchEle = document.getElementById('matchType');
+	output['match'] = matchEle.options[matchEle.selectedIndex].value;
+	output['matchNumber'] = document.getElementById('matchNumber').value;
+	let matchSignEle = document.getElementById('matchSign');
+	output['matchSign'] = matchSignEle.options[matchSignEle.selectedIndex].value;
+	output['delay'] = document.getElementById('matchDelay').value;
+
+	ipcRenderer.send('submitDashboardCreateTrigger', output);
+});
+
+document.getElementById('alertSubmit').addEventListener('click', () => {
+	let output = {};
+
+	output['triggerID'] = document.getElementById('triggerID').value;
+	let alertTypeEle = document.getElementById('alertType');
+	output['alertType'] = alertTypeEle.options[alertTypeEle.selectedIndex].value;
+	output['alertInput'] = document.getElementById('alertInput').value;
+
+	ipcRenderer.send('submitDashboardCreateAlert', output);
+});
+
+ipcRenderer.on('createAlertReply', (event, args) => {
+	console.log(args);
+});
+
+ipcRenderer.on('createTriggerReply', (event, args) => {
+	console.log(args);
+});
+
+</script>

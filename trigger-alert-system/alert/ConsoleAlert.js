@@ -4,7 +4,7 @@ const Alert = require('./Alert');
  * Alert that prints to console
  * @extends Alert
  **/
-class SayAlert extends Alert {
+class ConsoleAlert extends Alert {
 	/**
 	 * @param {string} say - Thing to print to console
 	 * @public
@@ -21,4 +21,4 @@ class SayAlert extends Alert {
 	}
 }
 
-module.exports = SayAlert;
+module.exports = ConsoleAlert;

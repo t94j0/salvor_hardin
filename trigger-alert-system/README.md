@@ -11,7 +11,7 @@ There are many other classes that will need to be used when making a trigger. He
 // Create Match object with what to match
 let newMatch = new Match('COUNT', 5, { sign: '>' });
 // Create Alert object for alerting when match succeeds
-let newAlert = new SayAlert("Found > 5 fuzzy searches with 'max'");
+let newAlert = new ConsoleAlert("Found > 5 fuzzy searches with 'max'");
 
 // Create ElasticTrigger and search for 'max~'
 // Client creation not shown

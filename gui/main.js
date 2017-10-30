@@ -1,9 +1,27 @@
-const { app } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const windowSingleton = require('./WindowSingleton');
-const Welcome = require('./pages/Welcome');
+const Welcome = require('./controllers/Welcome');
+const url = require('url');
+const path = require('path');
+
+let mainWindow
 
 function createWindow() {
-	new Welcome();
+	//new Welcome();
+	mainWindow = new BrowserWindow({
+		width: 800,
+		height: 600
+	});
+
+	mainWindow.loadURL(url.format({
+		pathname: path.join(__dirname, 'views', 'build', 'index.html'),
+		protocol: 'file:',
+		slashes: true
+	}));
+
+	mainWindow.on('close', () => {
+		mainWindow = null;
+	});
 }
 
 // Application related things

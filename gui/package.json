@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
-  "scripts": {},
+  "scripts": {
+	  "prestart": "cd ./views; npm run build; cd ..",
+	  "start": "electron ."
+  },
   "author": "",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "randomstring": "^1.1.5"
+  }
 }

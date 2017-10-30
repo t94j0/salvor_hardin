@@ -6,7 +6,7 @@ const async = require('async');
  * Elasticsearch specific trigger
  * @example
  * let newMatch = new Match('COUNT', 5, { sign: '>' });
- * let newAlert = new SayAlert('New Alert!');
+ * let newAlert = new ConsoleAlert('New Alert!');
  * let newTrigger = new ElasticTrigger(client, 'max~', newMatch, {
  *  	delay: 5,
  *  	alerts: [newAlert]
