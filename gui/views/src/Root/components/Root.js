@@ -1,25 +1,24 @@
-import React from 'react';
+import React, { Component } from 'react';
 
 // Router Creation libraries
 import { Route, Redirect } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
-import createHistory from 'history/createBrowserHistory';
 
 // Components
 import Welcome from '../../Welcome/components/Welcome';
-import Dashboard from '../../Dashboard/components/Dashboard';
 
 import '../styles/Root.css';
 
-const history = createHistory();
-
-const Root = ({ store }) => (
-	<Provider store={ store }>
-		<ConnectedRouter history={ history } >
-			<Route exact path="/welcome" component={ Welcome }/>
+const Root = (props) => (
+	<Provider store={ props.store }>
+		<ConnectedRouter history={ props.history }>
+			<div>
+				<Redirect exact from="/" to="/welcome" />
+				<Route exact path="/welcome" component={ Welcome }/>
+			</div>
 		</ConnectedRouter>
 	</Provider>
-);
+)
 
 export default Root;

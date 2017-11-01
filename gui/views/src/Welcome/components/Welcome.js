@@ -1,45 +1,46 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
-import { addClient } from '../../data/action-creators/clients';
-import elasticsearch from 'elasticsearch';
-
-const AddClient = (
-			<div>
-			<form onSubmit={ this.props.handleSubmit(this.state) }>
-				<label>Data Aggregator:</label>
-				<br/>
-				<select value={ this.state.value } onChange={ this.props.handleAggregatorChange }>
-					<option value="elasticsearch">Elasticsearch</option>
-					<option value="splunk">Splunk</option>
-				</select>
-				<br/>
-				<label>IP:</label>
-				<br/>
-				<input type="text" onChange={ this.props.handleAggregatorChange }></input>
-				<br/>
-				<button type="submit">Submit</button>
-			</form>
-			</div>
-);
+// import { addClient } from '../../data/action-creators/clients';
+// import elasticsearch from 'elasticsearch';
 
 class Welcome extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			type: 'elasticsearch',
-			ip: 'localhost:9200',
+			ip: '',
 		}
 
-		console.log(this.props);
+		this.handleAggregatorChange = this.handleAggregatorChange.bind(this);
+		this.handleIPChange = this.handleIPChange.bind(this);
+	}
+
+	handleAggregatorChange(event) {
+		this.setState({ type: event.target.value });
+	}
+
+	handleIPChange(event) {
+		this.setState({ ip: event.target.value });
 	}
 
 	render() {
-		return <AddClient
-			handleSubmit={ this.props.handleSubmit }
-			handleAggregatorChange={ this.props.handleAggregatorChange }
-			handleIPChange={ this.props.handleIPChange }
-		/>;
+		return (
+			<form onSubmit={ this.props.handleSubmit(this.state) }>
+				<label>Data Aggregator:</label>
+				<br/>
+				<select value={ this.state.type } onChange={ this.handleAggregatorChange }>
+					<option value="elasticsearch">Elasticsearch</option>
+					<option value="splunk">Splunk</option>
+				</select>
+				<br/>
+				<label>IP:</label>
+				<br/>
+				<input type="text" value={ this.state.ip } onChange={ this.handleIPChange }></input>
+				<br/>
+				<button type="submit">Submit</button>
+			</form>
+		);
 	}
 }
 
@@ -49,12 +50,6 @@ const mapDispatch = dispatch => ({
 		//dispatch(addClient());
 		dispatch(push('/dashboard'))
 		event.preventDefault();
-	},
-	handleAggregatorChange: (event) => {
-		this.state.type = event.target.value;
-	},
-	handleIPChange: (event) => {
-		this.state.ip = event.target.ip;
 	}
 })
 
