@@ -5,22 +5,21 @@ import { ADD_CLIENT } from '../../actionTypes';
  * 	{
  * 		type: '',
  * 		client: {
- * 			ip: '',
- * 			type: ''
+	 * 		RANDOMLY_GENERATED_ID: {
+	 * 			ip: '',
+	 * 			type: ''
+	 * 		}
  * 		}
  * 	},
  * 	{...
  * ]
  **/
-const initialState = [];
+const initialState = { };
 
 function client(state = initialState, action) {
 	switch(action.type) {
 		case ADD_CLIENT:
-			return [
-				...state,
-				action.client
-			]
+			return Object.assign({}, state, action.client);
 		default:
 			return state;
 	}

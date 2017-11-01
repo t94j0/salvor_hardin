@@ -1,6 +1,6 @@
 import { createStore, combineReducers } from 'redux';
-import clients from './Welcome/reducers/clients';
-import triggers from './Dashboard/reducers/triggers';
+import clients from './data/reducers/clients';
+import triggers from './data/reducers/triggers';
 
 const store = createStore(
 	combineReducers({

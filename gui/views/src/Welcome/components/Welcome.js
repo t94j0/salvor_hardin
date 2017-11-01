@@ -1,7 +1,27 @@
 import React, { Component } from 'react';
-import store from '../../store';
-import { addClient } from '../action-creators/clients';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
+import { addClient } from '../../data/action-creators/clients';
 import elasticsearch from 'elasticsearch';
+
+const AddClient = (
+			<div>
+			<form onSubmit={ this.props.handleSubmit(this.state) }>
+				<label>Data Aggregator:</label>
+				<br/>
+				<select value={ this.state.value } onChange={ this.props.handleAggregatorChange }>
+					<option value="elasticsearch">Elasticsearch</option>
+					<option value="splunk">Splunk</option>
+				</select>
+				<br/>
+				<label>IP:</label>
+				<br/>
+				<input type="text" onChange={ this.props.handleAggregatorChange }></input>
+				<br/>
+				<button type="submit">Submit</button>
+			</form>
+			</div>
+);
 
 class Welcome extends Component {
 	constructor(props) {
@@ -11,46 +31,31 @@ class Welcome extends Component {
 			ip: 'localhost:9200',
 		}
 
-		this.handleIPChange = this.handleIPChange.bind(this);
-		this.handleAggregatorChange = this.handleAggregatorChange.bind(this);
-		this.handleSubmit = this.handleSubmit.bind(this);
-	}
-
-	handleIPChange(event) {
-		this.setState({ ip: event.target.value });
-	}
-
-	handleAggregatorChange(event) {
-		this.setState({ type: event.target.value });
-	}
-
-	handleSubmit(event) {
-		store.dispatch();
-
-		event.preventDefault();
+		console.log(this.props);
 	}
 
 	render() {
-		return (
-			<div>
-			<p>{this.state.error}</p>
-			<form onSubmit={this.handleSubmit}>
-				<label>Data Aggregator:</label>
-				<br/>
-				<select value={this.state.value} onChange={this.handleAggregatorChange}>
-					<option value="elasticsearch">Elasticsearch</option>
-					<option value="splunk">Splunk</option>
-				</select>
-				<br/>
-				<label>IP:</label>
-				<br/>
-				<input type="text" onChange={this.handleIPChange}></input>
-				<br/>
-				<button type="submit">Submit</button>
-			</form>
-			</div>
-		);
+		return <AddClient
+			handleSubmit={ this.props.handleSubmit }
+			handleAggregatorChange={ this.props.handleAggregatorChange }
+			handleIPChange={ this.props.handleIPChange }
+		/>;
 	}
 }
 
-export default Welcome;
+const mapDispatch = dispatch => ({
+	handleSubmit: state => event => {
+		console.log(JSON.stringify(state));
+		//dispatch(addClient());
+		dispatch(push('/dashboard'))
+		event.preventDefault();
+	},
+	handleAggregatorChange: (event) => {
+		this.state.type = event.target.value;
+	},
+	handleIPChange: (event) => {
+		this.state.ip = event.target.ip;
+	}
+})
+
+export default connect(null, mapDispatch)(Welcome);
