@@ -1,24 +1,22 @@
 import { ADD_CLIENT } from '../../actionTypes';
-import store from '../../store';
+import { store } from '../../storeHistory';
 import randomstring from 'randomstring';
+import { ipcRenderer } from 'electron';
 
-export function addClient(type, ip) {
-	let clientId
-
-	do {
-		clientId = randomstring.generate();
-	} while (store.getState().clients[clientId]);
-
-	let newClient = {
-		type: ADD_CLIENT,
-		client: {}
-	};
-
-	newClient.client[clientId] = { ip, type }
-
-	return newClient;
+function addClient(type, ip) {
+	switch (type) {
+		case 'elasticsearch':
+			ipcRenderer.send('fuck this');
+			return {
+				type: ADD_CLIENT,
+				ip,
+				type
+			};
+		case 'splunk':
+			return null
+		default:
+			return null;
+	}
 }
 
-export function setAggregator(type) {
-	
-}
+export { addClient };

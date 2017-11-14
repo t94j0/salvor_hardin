@@ -26,8 +26,8 @@ class ElasticTrigger extends Trigger {
 	 * @public
 	 **/
         constructor(client, query, match, opts) {
-                super(query, match, opts);
-		this.client = client;
+			super(query, match, opts);
+			this.client = client;
         }
 	/**
 	 * See [here]{@link https://www.npmjs.com/package/elasticsearch}
@@ -41,23 +41,23 @@ class ElasticTrigger extends Trigger {
 	 * @todo Make "body.hits.hits" more efficent when using a "COUNT" match by using "body.hits.count" that is already supplied instead of counting manually
 	**/
         getData(callback) {
-		this.client.search({
-			q: this.query
-		})
-		.then((body) => {
-			let hits = body.hits;
-			// hits comes with { total: number, hits: {} }
-			// Rename "total" to "size"
-			hits.size = hits.total;
-			delete hits.total;
-			// Rename "hits" to "data"
-			hits.data = hits.hits;
-			delete hits.hits;
+			this.client.search({
+				q: this.query
+			})
+			.then((body) => {
+				let hits = body.hits;
+				// hits comes with { total: number, hits: {} }
+				// Rename "total" to "size"
+				hits.size = hits.total;
+				delete hits.total;
+				// Rename "hits" to "data"
+				hits.data = hits.hits;
+				delete hits.hits;
 
-			return callback(null, hits);
-		}, (err) => {
-			return callback(err, null);
-		});
+				return callback(null, hits);
+			}, (err) => {
+				return callback(err, null);
+			});
         }
 }
 

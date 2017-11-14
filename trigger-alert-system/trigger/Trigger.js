@@ -31,13 +31,13 @@ class Trigger {
 		this.intervalID = -1;
 
 		// Value of "this" changes when inside async.waterfall binding
-                // "this" from the constructor keeps value of this
-                this.trigger = this.trigger.bind(this);
-                this.getData = this.getData.bind(this);
-                this.matcher = this.matcher.bind(this);
-                this.callAlerts = this.callAlerts.bind(this);
-                this.stop = this.stop.bind(this);
-                this.start = this.start.bind(this);
+		// "this" from the constructor keeps value of this
+		this.trigger = this.trigger.bind(this);
+		this.getData = this.getData.bind(this);
+		this.matcher = this.matcher.bind(this);
+		this.callAlerts = this.callAlerts.bind(this);
+		this.stop = this.stop.bind(this);
+		this.start = this.start.bind(this);
 	}
 
 	/**
@@ -98,13 +98,13 @@ class Trigger {
 	 **/
 	trigger(callback) {
 		async.waterfall([
-                        this.getData,
-                        this.matcher,
-                        this.callAlerts
-                ], (err) => {
-                        if (err) return callback(err);
-                        else return callback(null);
-                });
+			this.getData,
+			this.matcher,
+			this.callAlerts
+		], (err) => {
+			if (err) return callback(err);
+			else return callback(null);
+		});
 	}
 
 	/**
@@ -153,20 +153,20 @@ class Trigger {
 	 * @private
 	 **/
         callAlerts(hits, callback) {
-                // Return callback if it's not a match
-                if (!hits.isMatch) return callback(null);
+			// Return callback if it's not a match
+			if (!hits.isMatch) return callback(null);
 
-		// Push functions to array and bind "hits"
-                let alertFuncs = [];
-                for (let i in this.alerts) {
-                        alertFuncs.push(this.alerts[i].alert.bind(null, hits.hits));
-                }
+	// Push functions to array and bind "hits"
+			let alertFuncs = [];
+			for (let i in this.alerts) {
+				alertFuncs.push(this.alerts[i].alert.bind(null, hits.hits));
+			}
 
-                // Execute callbacks if it is a match
-                async.parallel(alertFuncs, (err) => {
-                        if (err) return callback(err);
-                        else return callback(null);
-                });
+			// Execute callbacks if it is a match
+			async.parallel(alertFuncs, (err) => {
+				if (err) return callback(err);
+				else return callback(null);
+			});
         }
 	/**
 	 * @callback Trigger~callAlertsCallback

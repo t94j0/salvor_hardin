@@ -6,16 +6,14 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 
 // Components
-import Welcome from '../../Welcome/components/Welcome';
-
-import '../styles/Root.css';
+import AddClient from './AddClient';
 
 const Root = (props) => (
 	<Provider store={ props.store }>
 		<ConnectedRouter history={ props.history }>
 			<div>
 				<Redirect exact from="/" to="/welcome" />
-				<Route exact path="/welcome" component={ Welcome }/>
+				<Route exact path="/welcome" component={ AddClient }/>
 			</div>
 		</ConnectedRouter>
 	</Provider>
