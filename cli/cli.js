@@ -21,6 +21,7 @@ rl.on('line', line => {
 			categoryTrigger(commands.slice(1));
 		default:
 			console.log('Category is not correct');
+			console.log('Categories include "client", "trigger"');
 	}
 });
 
